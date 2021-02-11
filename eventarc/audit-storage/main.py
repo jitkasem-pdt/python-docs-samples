@@ -25,7 +25,11 @@ app = Flask(__name__)
 def index():
     # Gets the GCS bucket name from the CloudEvent header
     # Example: "storage.googleapis.com/projects/_/buckets/my-bucket"
+    # storage.googleapis.com/projects/_/buckets/test_dong/objects/support_site.csv
     bucket = request.headers.get('ce-subject')
+    tmp_bucket = bucket.split("/")
+    ttt = tmp_bucket[4]
+    qqq = tmp_bucket[6]
     
     # Construct a BigQuery client object.
     client = bigquery.Client()
@@ -43,7 +47,7 @@ def index():
         source_format=bigquery.SourceFormat.CSV,
     )
     
-    uri = "gs://cloud-samples-data/bigquery/us-states/us-states.csv"
+    uri = "gs://{ttt}/{qqq}"
 
     load_job = client.load_table_from_uri(
         uri, table_id, job_config=job_config
@@ -51,7 +55,8 @@ def index():
 
     load_job.result()  # Waits for the job to complete.
 
-    destination_table = client.get_table(table_id)  # Make an API request.
+    destination_table = client.get_table(table_id)  
+    # Make an API request.
     # print("Loaded {} rows.".format(destination_table.num_rows))
 
     print(f"Detected change in GCS bucket: {bucket}")
