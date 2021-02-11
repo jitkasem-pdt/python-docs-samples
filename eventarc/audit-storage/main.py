@@ -47,7 +47,7 @@ def index():
         source_format=bigquery.SourceFormat.CSV,
     )
     
-    uri = "gs://{ttt}/{qqq}"
+    uri = f"gs://{ttt}/{qqq}"
 
     load_job = client.load_table_from_uri(
         uri, table_id, job_config=job_config
